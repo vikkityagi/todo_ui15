@@ -1,0 +1,58 @@
+.custom-width {
+    max-width: 80%; /* Adjust this value as needed */
+  }
+
+  /* Additional styling for the table */
+.table {
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.table th, .table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: #f9f9f9;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+.thead-dark th {
+  background-color: #343a40;
+  color: #fff;
+}
+
+
+#myReport{
+  width: 50%;
+}
+
+.large-message {
+  font-size: 1.5rem; /* Larger text size for the message */
+  font-weight: bold; /* Bold text for emphasis */
+  color: #333; /* Dark color for better readability */
+  margin-top: 1rem; /* Spacing above the message */
+  margin-bottom: 1rem; /* Spacing below the message */
+  text-align: center; /* Center-align the message text */
+  line-height: 1.4; /* Improved line height for readability */
+}
+
+.large-emoji {
+  font-size: 3rem; /* Larger emoji size */
+  margin-left: 0.5rem; /* Space between text and emoji */
+  vertical-align: middle; /* Align emoji vertically with the text */
+}
+
+/* Additional styles for the modal body */
+.modal-body {
+  padding: 2rem; /* Add padding inside the modal body */
+  background-color: #f9f9f9; /* Light background color for contrast */
+  border-radius: 0.5rem; /* Rounded corners for the modal content */
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+}

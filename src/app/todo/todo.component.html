@@ -1,0 +1,221 @@
+
+<div class="container">
+    <div class="row mt-3">
+      <div class="col-lg-10 col-md-10 col-10">
+        <div class="card">
+          <div class="card-body">
+            <table class="table table-striped table-bordered table-hover">
+              <thead class="thead-dark">
+                <tr>
+                  <th>Task Name</th>
+                  <th>Progress</th>
+                  <th>Date</th>
+                  <th>Time Spent</th>
+                  <th>Report</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngIf="tasks$ | async as tasks; else noTasks">
+                  <ng-container *ngFor="let task of tasks; let i = index">
+                    <tr>
+                      <td>{{ task.task_name }}</td>
+                      <td>{{ task.progress_name }}</td>
+                      <td>{{ task.date }}</td>
+                      <td>{{ task.total_time }}</td>
+                      <td><button type="button" class="btn btn-primary">
+                        <i class="bi bi-eye" (click)="openReport(task)"></i> View
+                      </button></td>
+                    </tr>
+                  </ng-container>
+                </ng-container>
+                <ng-template #noTasks>
+                  <tr>
+                    <td colspan="5" class="text-center">No tasks available</td>
+                  </tr>
+                </ng-template>
+              </tbody>
+              
+            </table>
+  
+            <div class="col-12">
+              <nav aria-label="Page navigation">
+                <ul class="pagination">
+                  <li class="page-item" [ngClass]="{ 'disabled': currentPage === 1 }">
+                    <a class="page-link" (click)="previousPage()" aria-label="Previous">
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  </li>
+                  <li *ngFor="let page of totalPagesArray()" class="page-item"
+                    [ngClass]="{ 'active': currentPage === page }">
+                    <a class="page-link" (click)="setPage(page)">{{ page }}</a>
+                  </li>
+                  <li class="page-item" [ngClass]="{ 'disabled': currentPage === totalPagesArray().length }">
+                    <a class="page-link" (click)="nextPage()" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-2 col-md-2 col-2">
+        <button type="button" class="btn btn-primary float-end" (click)="openModal()">Add Task</button>
+      </div>
+    </div>
+  
+  
+  
+  
+    <div class="modal fade" id="myModal" role="dialog">
+      <div class="modal-dialog custom-width">
+  
+        
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Add Task</h4>
+          </div>
+          <div class="modal-body">
+            <div *ngIf="alertMessage" class="alert alert-{{alertMessage.type}}" role="alert">{{alertMessage.message }}
+            </div>
+            <form [formGroup]="todoFormGroup" (ngSubmit)="onSubmit()">
+              <div formArrayName="tasks">
+                <div *ngFor="let task of tasks.controls; let i = index" [formGroupName]="i">
+                  <div class="card mb-1 ml-3 mr-3">
+                    <div class="card-header text-center" #taskno><span><b>Add Task</b></span></div>
+                    <div class="card-body m-3">
+                      <div class="form-group">
+                        <div class="row">
+                          <div class="col-xl-1 col-lg-1 col-md-12 col-12">
+                            <p><b>Select Task</b></p>
+                          </div>
+                          <div class="col-xl-11 col-lg-11 col-md-12 col-12">
+                            
+                            <select formControlName="task_id" class="form-control">
+                                <option *ngFor="let task of taskList" [value]="task.id">{{ task.name }}</option>
+                              </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group mt-2">
+                        <div class="row">
+                          <div class="col-xl-1 col-lg-1 col-md-12 col-12">
+                            <p><b>Select One</b></p>
+                          </div>
+                          <div class="col-xl-11 col-lg-11 col-md-12 col-12">
+                            <div>
+                              <input type="radio" formControlName="progress" value="1"
+                                (change)="onProgress($event)">&nbsp;&nbsp;Completed
+                              <input type="radio" formControlName="progress" value="2"
+                                (change)="onProgress($event)">&nbsp;&nbsp;Not Start
+                              <input type="radio" formControlName="progress" value="3"
+                                (change)="onProgress($event)">&nbsp;&nbsp;Partial
+                            </div>
+                          </div>
+  
+                        </div>
+                      </div>
+                      <div class="form-group mt-2">
+                        <div class="row">
+                          <div class="col-xl-1 col-lg-1 col-md-12 col-12">
+                            <label for="datepicker"><b>Choose a Date</b></label>
+                          </div>
+                          <div class="col-xl-11 col-lg-11 col-md-12 col-12">
+                            <div>
+                              <input type="date" class="form-control" id="datepicker" formControlName="date">
+                            </div>
+                          </div>
+  
+                        </div>
+                      </div>
+                      <div class="form-group mt-2">
+                        <div class="row">
+                          <div class="col-xl-1 col-lg-1 col-md-1 col-12">
+                            <label for="timepicker"><b>Start Time</b></label>
+                          </div>
+                          <div class="col-xl-11 col-lg-11 col-md-11 col-12">
+                            <div>
+                              <input type="time" class="form-control" id="timepicker" formControlName="start_time">
+                            </div>
+                          </div>
+  
+                        </div>
+                      </div>
+                      <div class="form-group mt-2">
+                        <div class="row">
+                          <div class="col-xl-1 col-lg-1 col-md-12 col-12">
+                            <label for="timepicker"><b>End Time</b></label>
+                          </div>
+                          <div class="col-xl-11 col-lg-11 col-md-12 col-12">
+                            <div>
+                              <input type="time" class="form-control" id="timepicker" formControlName="end_time">
+                            </div>
+                          </div>
+  
+                        </div>
+                      </div>
+                    </div>
+                    <button type="button" class="btn btn-danger float-end m-2" (click)="removeTask(i)"
+                      [ngStyle]="{'width': '88px'}">Remove</button>
+                  </div>
+  
+                </div>
+                <div class="btn">
+                  <button type="button" class="btn btn-primary" (click)="addTask()">Add</button>
+                </div>
+              </div>
+              <div class="btn-group text-center float-end">
+                <button type="reset" class="btn btn-success">Reset</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+  
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="closeModal()">Close</button>
+          </div>
+        </div>
+  
+      </div>
+    </div>
+  
+    <div class="modal fade" id="myReport" role="dialog">
+      <div class="modal-dialog custom-width">
+        <div class="modal-content">
+          <!-- <div class="modal-header">
+            <h4 class="modal-title">Report</h4>
+          </div> -->
+          <div class="modal-body" *ngIf="selectedTask">
+            <h1>This is your Report:</h1>
+            <br>
+            <h5><b>Task Name - </b> <span fxFlex>{{selectedTask.task_name}}</span></h5>
+            <h5><b>Time Start - </b> <span fxFlex>{{selectedTask.start_time}}</span></h5>
+            <h5><b>Time End - </b> <span fxFlex>{{selectedTask.end_time}}</span></h5>
+            <div *ngIf="selectedTask.total_time">
+              <ng-container *ngIf="selectedTask.total_time < '00:20'">
+                <div class="text-center large-message">You could have done better <span role="img" class="large-emoji" aria-label="sad">😉</span></div>
+              </ng-container>
+              <ng-container *ngIf="selectedTask.total_time >= '00:20' && selectedTask.total_time < '00:50'">
+                <div class="text-center large-message">You did good but you can do better <span role="img" class="large-emoji" aria-label="smile">😃</span></div>
+              </ng-container>
+              <ng-container *ngIf="selectedTask.total_time >= '00:50' && selectedTask.total_time < '01:00'">
+                <div class="text-center large-message">You are doing good <span role="img" class="large-emoji" aria-label="thumb">😀</span></div>
+              </ng-container>
+              <ng-container *ngIf="selectedTask.total_time >= '01:00' && selectedTask.total_time < '01:30'">
+                <div class="text-center large-message">You are doing great <span role="img" class="large-emoji" aria-label="thumb">😃</span></div>
+              </ng-container>
+              <ng-container *ngIf="selectedTask.total_time >= '01:30'">
+                <div class="text-center large-message">Your report looks excellent <span class="large-emoji" role="img" aria-label="lol">😄</span></div>
+              </ng-container>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="closeReport()">Close</button>
+          </div>
+        </div>
+  
+      </div>
+    </div>
+  
+    
